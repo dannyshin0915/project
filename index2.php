@@ -1,36 +1,53 @@
-<?php
-include "/db2.php"; ?>
-<!DOCTYPE html>
+<?php include  $_SERVER['DOCUMENT_ROOT']."/db.php"; ?>
+<!doctype html>
 <head>
-	<meta charset="utf-8" />
-	<title>회원가입 및 로그인 사이트</title>
-<link rel="stylesheet" type="text/css" href="/css/common.css" />
+<meta charset="UTF-8">
+<title>게시판</title>
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
 </head>
 <body>
-	<div id="login_box">
-		<h1>로그인</h1>							
-			<form method="post" action="/member/login_ok.php">
-				<table align="center" border="0" cellspacing="0" width="300">
-        			<tr>
-            			<td width="130" colspan="1"> 
-                		<input type="text" name="userid" class="inph">
-            		</td>
-            		<td rowspan="2" align="center" width="100" > 
-                		<button type="submit" id="btn" >로그인</button>
-            		</td>
-        		</tr>
-        		<tr>
-            		<td width="130" colspan="1"> 
-               		<input type="password" name="userpw" class="inph">
-            	</td>
-        	</tr>
-        	<tr>
-           		<td colspan="3" align="center" class="mem"> 
-              	<a href="/member/member.php">회원가입 하시겠습니까?</a>
-           </td>
+<div id="board_area"> 
+  <h1>자유게시판</h1>
+  <h4>자유롭게 글을 쓸 수 있는 게시판입니다.</h4>
+  <a href=/hextris/index.html>hextris</a>
+  <a href=/cloud/index3.php>VM 생성</a>
+    <table class="list-table">
+      <thead>
+          <tr>
+              <th width="70">번호</th>
+                <th width="500">제목</th>
+                <th width="120">글쓴이</th>
+                <th width="100">작성일</th>
+                <th width="100">조회수</th>
+            </tr>
+        </thead>
+        <?php
+        // board테이블에서 idx를 기준으로 내림차순해서 5개까지 표시
+          $sql = mq("select * from board order by idx desc limit 0,5"); 
+            while($board = $sql->fetch_array())
+            {
+              //title변수에 DB에서 가져온 title을 선택
+              $title=$board["title"]; 
+              if(strlen($title)>30)
+              { 
+                //title이 30을 넘어서면 ...표시
+                $title=str_replace($board["title"],mb_substr($board["title"],0,30,"utf-8")."...",$board["title"]);
+              }
+        ?>
+      <tbody>
+        <tr>
+          <td width="70"><?php echo $board['idx']; ?></td>
+          <td width="500"><a href="/page/board/read.php?idx=<?php echo $board["idx"];?>"><?php echo $title;?></a></td>
+          <td width="120"><?php echo $board['name']?></td>
+          <td width="100"><?php echo $board['date']?></td>
+          <td width="100"><?php echo $board['hit']; ?></td>
         </tr>
+      </tbody>
+      <?php } ?>
     </table>
-  </form>
-</div>
+    <div id="write_btn">
+      <a href="/page/board/write.php"><button>글쓰기</button></a>
+    </div>
+  </div>
 </body>
 </html>
